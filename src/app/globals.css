@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/*
+ * IDENTITÉ VISUELLE : modifier ces valeurs pour changer les couleurs de tout le site.
+ * Règle de formes : photos et cartes = rounded-2xl (16px), boutons, filtres et badges = pilule.
+ */
+@theme {
+  --color-ivory: #f8f6f1;      /* fond principal, blanc cassé */
+  --color-paper: #efeae1;      /* surfaces secondaires */
+  --color-sand: #dccfb9;       /* beige sable */
+  --color-line: #e1d9cc;       /* filets et bordures */
+  --color-ink: #141311;        /* noir profond */
+  --color-charcoal: #262420;
+  --color-muted: #5c574f;      /* texte secondaire */
+  --color-accent: #9a4f22;     /* accent chaud : caramel */
+  --color-accent-deep: #7f4019;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-geist-sans), ui-sans-serif, sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-ivory text-ink font-sans antialiased;
+  }
+  ::selection {
+    background: var(--color-sand);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+}
+
+/* Titres : grotesque expressive, serrée */
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  font-variation-settings: "wdth" 88;
+}
+
+/* Apparition progressive (components/ui/Reveal.tsx) */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.8s var(--ease-out-soft), transform 0.8s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Panneaux <dialog> */
+dialog.sheet {
+  max-width: none;
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+dialog.sheet::backdrop {
+  background: rgb(20 19 17 / 0.45);
+  backdrop-filter: blur(2px);
+}
+dialog.sheet[open] .sheet-panel { animation: sheet-in 0.45s var(--ease-out-soft); }
+dialog.sheet[open]::backdrop { animation: fade-in 0.35s ease-out; }
+
+@keyframes sheet-in { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes hero-zoom { from { transform: scale(1.06); } to { transform: scale(1); } }
+@keyframes bubble-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
